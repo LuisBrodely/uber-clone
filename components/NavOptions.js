@@ -3,6 +3,8 @@ import React from 'react'
 import tw from 'twrnc';
 import { Icon } from '@rneui/themed';
 import { useNavigation } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
+import { selectOrigin } from '../slices/navSlice';
 
 const data = [
     {
@@ -17,10 +19,17 @@ const data = [
         image: 'https://blog.uber-cdn.com/wp-content/uploads/2020/04/Cardboard-Box_v02.png',
         screen: 'EatsScreen'
     },
+    {
+        id: '789',
+        title: 'Send package',
+        image: 'https://blog.uber-cdn.com/wp-content/uploads/2020/04/Cardboard-Box_v02.png',
+        screen: 'EatsScreen'
+    },
 ]
 
 const NavOptions = () => {
   const navigation = useNavigation()
+  const origin = useSelector(selectOrigin)
 
   return (
     <FlatList
@@ -31,6 +40,7 @@ const NavOptions = () => {
             <TouchableOpacity 
                 style = {tw`bg-gray-200 mr-2 pr-2 pl-6 pb-8 pt-4 w-40`}
                 onPress = {() => navigation.navigate(item.screen)}
+                disabled = {!origin}
             >
                 <View>
                     <Image

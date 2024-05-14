@@ -11,12 +11,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { RootStackParamList } from '../navigation/RootNavigator';
 import { DirectionButton } from '../components/DirectionButton';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-
+import { useSelector } from 'react-redux';
+import { selectOrigin } from '../../features/nav/navSlice';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
 export const HomeScreen = ({ navigation }: Props) => {
   const dispatch = useAppDispatch();
+  const origin = useSelector(selectOrigin);
 
   return (
     <SafeAreaView
@@ -35,23 +37,7 @@ export const HomeScreen = ({ navigation }: Props) => {
           textInputProps={{
             placeholderTextColor: '#1a1a1a',
           }}
-          styles={{
-            container: {
-              flex: 0,
-            },
-            textInput: {
-              backgroundColor: '#EEEEEE',
-              color: '#1a1a1a',
-              fontSize: 16,
-              fontWeight: 'bold',
-            },
-            textInputContainer: {
-              paddingTop: 4,
-              paddingHorizontal: 20,
-              backgroundColor: '#EEEEEE',
-              borderRadius: 100,
-            },
-          }}
+          styles={placesAutocomplete}
           onPress={(
             data: GooglePlaceData,
             details: GooglePlaceDetail | null = null,
@@ -72,7 +58,7 @@ export const HomeScreen = ({ navigation }: Props) => {
           enablePoweredByContainer={false}
           minLength={2}
           query={{
-            key: '',
+            key: process.env.API_KEY_GOOGLE,
             language: 'es',
           }}
           nearbyPlacesAPI="GooglePlacesSearch"
@@ -88,19 +74,22 @@ export const HomeScreen = ({ navigation }: Props) => {
           <Text style={styles.subtitle}>Ver todo</Text>
         </View>
         <View style={{ flexDirection: 'row', gap: 12 }}>
-          <View style={styles.card}>
+          <Pressable
+            style={{...styles.card, opacity: !origin.point ? 0.6 : 1}}
+            disabled={!origin.point}
+            onPress={() => navigation.navigate('Map')}>
             <Image
               src="https://www.uber-assets.com/image/upload/f_auto,q_auto:eco,c_fill,w_956,h_638/v1682350380/assets/2f/29d010-64eb-47ac-b6bb-97503a838259/original/UberX-%281%29.png"
-							style={styles.cardImage}
-						/>
-						<Text style={styles.cardText}>Viaje</Text>
-          </View>
-					<View style={styles.card}>
+              style={styles.cardImage}
+            />
+            <Text style={styles.cardText}>Viaje</Text>
+          </Pressable>
+          <View style={{...styles.card, opacity: 0.6}}>
             <Image
               src="https://www.uber-assets.com/image/upload/f_auto,q_auto:eco,c_fill,w_956,h_638/v1682350473/assets/97/e2a99c-c349-484f-b6b0-3cea1a8331b5/original/UberBlack.png"
-							style={styles.cardImage}
-						/>
-						<Text style={styles.cardText}>Servicios</Text>
+              style={styles.cardImage}
+            />
+            <Text style={styles.cardText}>Servicios</Text>
           </View>
         </View>
       </View>
@@ -128,15 +117,33 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 16,
     marginTop: 16,
-		flex: 1
+    flex: 1,
   },
-	cardImage: {
-		width: 90,
-		height: 50,
-		alignSelf: 'flex-end'
-	},
-	cardText: {
-		fontSize: 12,
-		marginTop: 10
-	}
+  cardImage: {
+    width: 100,
+    height: 50,
+    alignSelf: 'flex-end',
+  },
+  cardText: {
+    fontSize: 12,
+    marginTop: 10,
+  },
+});
+
+const placesAutocomplete = StyleSheet.create({
+  container: {
+    flex: 0,
+  },
+  textInput: {
+    backgroundColor: '#EEEEEE',
+    color: '#1a1a1a',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  textInputContainer: {
+    paddingTop: 4,
+    paddingHorizontal: 20,
+    backgroundColor: '#EEEEEE',
+    borderRadius: 100,
+  },
 });

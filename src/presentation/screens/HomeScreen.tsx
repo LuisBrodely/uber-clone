@@ -13,6 +13,18 @@ import { DirectionButton } from '../components/DirectionButton';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useSelector } from 'react-redux';
 import { selectOrigin } from '../../features/nav/navSlice';
+import { useState } from 'react';
+
+const favoritesPlaces = [
+  {
+    place: 'Universidad Politécnica de Chiapas',
+    direction: 'Las Brisas, Suchiapa, Chis., México',
+  },
+  {
+    place: 'Aeropuerto Internacional Ángel Albino Corzo',
+    direction: 'Tramo Carretero Vergel Aeropuerto, Francisco Sarabia, Tuxtla Gutiérrez, Chis., México',
+  },
+];
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
@@ -43,7 +55,6 @@ export const HomeScreen = ({ navigation }: Props) => {
             details: GooglePlaceDetail | null = null,
           ) => {
             // 'details' is provided when fetchDetails = true
-            console.log(data, details);
             dispatch(
               setOrigin({
                 description: data.description,
@@ -64,9 +75,12 @@ export const HomeScreen = ({ navigation }: Props) => {
           nearbyPlacesAPI="GooglePlacesSearch"
         />
         <View style={{ marginBottom: 32 }}>
-          <DirectionButton />
-          <DirectionButton />
-          <DirectionButton />
+          {favoritesPlaces.map((place, index) => (
+            <DirectionButton
+              key={index}
+              {...place}
+            />
+          ))}
         </View>
 
         <View style={styles.section}>

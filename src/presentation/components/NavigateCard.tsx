@@ -12,6 +12,17 @@ import { useAppDispatch } from '../../app/hooks';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { DirectionButton } from './DirectionButton';
 
+const favoritesPlaces = [
+  {
+    place: 'Universidad Politécnica de Chiapas',
+    direction: 'Las Brisas, Suchiapa, Chis., México',
+  },
+  {
+    place: 'Aeropuerto Internacional Ángel Albino Corzo',
+    direction: 'Tramo Carretero Vergel Aeropuerto, Francisco Sarabia, Tuxtla Gutiérrez, Chis., México',
+  },
+];
+
 type Props = NativeStackScreenProps<MapStackParamList, 'Navigate'>;
 
 export const NavigateCard = ({ navigation }: Props) => {
@@ -39,7 +50,6 @@ export const NavigateCard = ({ navigation }: Props) => {
           details: GooglePlaceDetail | null = null,
         ) => {
           // 'details' is provided when fetchDetails = true
-          console.log(data, details);
           dispatch(
             setDestination({
               description: data.description,
@@ -60,8 +70,9 @@ export const NavigateCard = ({ navigation }: Props) => {
         nearbyPlacesAPI="GooglePlacesSearch"
       />
       <View style={{ marginTop: 12 }}>
-        <DirectionButton />
-        <DirectionButton />
+        {favoritesPlaces.map((place, index) => (
+          <DirectionButton key={index} {...place} />
+        ))}
       </View>
     </View>
   );
